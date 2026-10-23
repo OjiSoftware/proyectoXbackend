@@ -19,11 +19,16 @@ const app = express();
 
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:5173",
-        methods: ["GET", "POST", "PUT", "DELETE"],
+        origin: [
+            process.env.FRONTEND_URL || "http://localhost:5173",
+            "https://proyecto-xfrontend.vercel.app",
+        ],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
     }),
 );
+app.options("*", cors());
 
 // Middlewares
 app.use(express.json());
