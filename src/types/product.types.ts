@@ -5,7 +5,7 @@ export type CreateProductInput = {
     price: number;
     imageUrl: string;
     stock: number;
-    brandId: number;
+    brandId: number | null;
     subCategoryId: number;
     status?: boolean;
     showingInCatalog?: boolean;
@@ -18,7 +18,7 @@ export type UpdateProductInput = {
     price?: number;
     imageUrl?: string;
     stock?: number;
-    brandId?: number;
+    brandId?: number | null;
     subCategoryId?: number;
     status?: boolean;
     showingInCatalog?: boolean;

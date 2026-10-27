@@ -164,8 +164,8 @@ model Product {
   showingInCatalog  Boolean       @default(false) @map("showing_in_catalog")
   subCategoryId     Int           @map("sub_categories_id")
   subCategory       SubCategory   @relation(fields: [subCategoryId], references: [id])
-  brandId           Int           @map("brand_id")
-  brand             Brand         @relation(fields: [brandId], references: [id])
+  brandId           Int?           @map("brand_id")
+  brand             Brand?         @relation(fields: [brandId], references: [id])
   saleDetails       SaleDetails[]
 
   @@map("products")
