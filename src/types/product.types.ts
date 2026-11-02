@@ -4,6 +4,7 @@ export type CreateProductInput = {
     unit?: string | null;
     price: number;
     costPrice?: number | null;
+    barcode?: string | null;
     imageUrl: string;
     stock: number;
     brandId?: number | null;
@@ -18,6 +19,7 @@ export type UpdateProductInput = {
     unit?: string;
     price?: number;
     costPrice?: number | null;
+    barcode?: string | null;
     imageUrl?: string;
     stock?: number;
     brandId?: number | null;

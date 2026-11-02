@@ -36,6 +36,17 @@ export const getProduct = async (req: Request, res: Response) => {
  */
 export const createProduct = async (req: Request, res: Response) => {
     try {
+        /* control barcode */
+
+        const barcodeError = validateBarcode(req.body?.barcode);
+
+        if (barcodeError) {
+            return res.status(400).json({ message: barcodeError });
+        }
+        
+
+        /* fin control barcode */
+
         const result = await productService.createProduct(req.body);
         res.status(201).json(result);
     } catch (error: any) {
@@ -48,6 +59,13 @@ export const createProduct = async (req: Request, res: Response) => {
  */
 export const updateProduct = async (req: Request, res: Response) => {
     try {
+
+        const barcodeError = validateBarcode(req.body?.barcode);
+
+        if (barcodeError) {
+            return res.status(400).json({ message: barcodeError });
+        }
+
         const result = await productService.updateProduct(
             Number(req.params.id),
             req.body,
@@ -89,4 +107,39 @@ export const getCatalog = async (_req: Request, res: Response) => {
         console.log("Error en getCatalog en el controller", error)
         res.status(500).json({ message: "Algo salio mal en el controller" })
     }
+}
+
+
+/* Verifica BarCode */
+
+const validateBarcode =  (value: unknown): string | null => {
+    
+    if (value === undefined || value === null) return null;
+
+    if ( typeof value !=="string" || !/^[0-9]+$/.test(value) ){
+        return "El código de barras debe contener solo digitos";
+    }
+
+    if (![8, 12, 13, 14].includes(value.length)) {
+        return "El codigo debe tener una longitud de 8, 12, 13 o 14 digitos";
+    }
+
+    const digitsBeforeCheck = value
+        .slice(0, -1)
+        .split("")
+        .reverse();
+
+    const sum = digitsBeforeCheck.reduce((total, digit, index) =>
+        total + Number (digit) * (index % 2 === 0 ? 3 : 1), 
+        0,
+    );
+
+    const expectedCheckDigit = (10 - (sum % 10)) % 10;
+    const actualCheckDigit = Number(value[value.length - 1]);
+
+    if (actualCheckDigit !== expectedCheckDigit) {
+        return "El dígito de control del código de barras no es válido.";
+    }
+
+    return null;
 }
