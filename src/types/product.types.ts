@@ -1,7 +1,7 @@
 export type CreateProductInput = {
     name: string;
-    description: string;
-    unit: string;
+    description: string | null;
+    unit: string | null;
     price: number;
     imageUrl: string;
     stock: number;
