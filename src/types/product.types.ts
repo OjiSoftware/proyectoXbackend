@@ -1,11 +1,12 @@
 export type CreateProductInput = {
     name: string;
-    description: string | null;
-    unit: string | null;
+    description?: string | null;
+    unit?: string | null;
     price: number;
+    costPrice?: number | null;
     imageUrl: string;
     stock: number;
-    brandId: number | null;
+    brandId?: number | null;
     subCategoryId: number;
     status?: boolean;
     showingInCatalog?: boolean;
@@ -16,6 +17,7 @@ export type UpdateProductInput = {
     description?: string;
     unit?: string;
     price?: number;
+    costPrice?: number | null;
     imageUrl?: string;
     stock?: number;
     brandId?: number | null;
