@@ -10,6 +10,7 @@ export type CreateProductInput = {
     brandId?: number | null;
     subCategoryId: number;
     status?: boolean;
+    isOffer?: boolean
     showingInCatalog?: boolean;
 };
 
@@ -25,5 +26,6 @@ export type UpdateProductInput = {
     brandId?: number | null;
     subCategoryId?: number;
     status?: boolean;
+    isOffer?: boolean
     showingInCatalog?: boolean;
 };
