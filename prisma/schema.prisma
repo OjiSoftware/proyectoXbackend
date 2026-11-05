@@ -75,22 +75,22 @@ model Category {
   name              String        @unique @map("category_name") @db.VarChar(100)
   createdAt         DateTime      @default(now()) @map("created_at")
   status            Boolean       @default(true)
-  subCategories     SubCategory[]
+  products          Product[]
 
   @@map("categories")
 }
 
-model SubCategory {
-  id                Int       @id @default(autoincrement())
-  name              String    @unique @map("subcategory_name") @db.VarChar(100)
-  createdAt         DateTime  @default(now()) @map("created_at")
-  status            Boolean   @default(true)
-  categoryId        Int       @map("categories_id")
-  category          Category  @relation(fields: [categoryId], references: [id])
-  products          Product[]
-
-  @@map("subcategories")
-}
+// model SubCategory {
+//   id                Int       @id @default(autoincrement())
+//   name              String    @map("subcategory_name") @db.VarChar(100)
+//   createdAt         DateTime  @default(now()) @map("created_at")
+//   status            Boolean   @default(true)
+//   categoryId        Int       @map("categories_id")
+//   category          Category  @relation(fields: [categoryId], references: [id])
+//   products          Product[]
+//
+//   @@map("subcategories")
+// }
 
 model Brand {
   id                Int       @id @default(autoincrement())
@@ -165,8 +165,8 @@ model Product {
   imageUrl          String        @map("img") @db.Text
   stock             Int
   showingInCatalog  Boolean       @default(false) @map("showing_in_catalog")
-  subCategoryId     Int           @map("sub_categories_id")
-  subCategory       SubCategory   @relation(fields: [subCategoryId], references: [id])
+  categoryId        Int           @map("category_id")
+  category          Category      @relation(fields: [categoryId], references: [id])
   brandId           Int?           @map("brand_id")
   brand             Brand?         @relation(fields: [brandId], references: [id])
   saleDetails       SaleDetails[]

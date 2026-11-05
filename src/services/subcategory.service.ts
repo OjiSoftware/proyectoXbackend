@@ -1,3 +1,7 @@
+/*
+ * TEMPORARILY DISABLED: the subcategory API is not used.
+ * Kept as commented reference until the feature is intentionally restored.
+ *
 // src/services/subcategory.service.ts
 import * as subCategoryRepo from "../repositories/subcategory.repository";
 import { SubCategory as SubCategoryModel } from "../generated/prisma/client";
@@ -10,7 +14,7 @@ import {
  * Obtiene todas las subcategorías activas.
  * @returns Array de subcategorías.
  * @throws Error si falla la consulta.
- */
+ * /
 export const getAllSubCategories = async (): Promise<SubCategoryModel[]> => {
     return subCategoryRepo.findAllSubCategories();
 };
@@ -20,7 +24,7 @@ export const getAllSubCategories = async (): Promise<SubCategoryModel[]> => {
  * @param id - ID de la subcategoría.
  * @returns Subcategoría encontrada.
  * @throws Error si no se encuentra la subcategoría.
- */
+ * /
 export const getSubCategoryById = async (
     id: number,
 ): Promise<SubCategoryModel> => {
@@ -36,7 +40,7 @@ export const getSubCategoryById = async (
  * @param data - Datos para crear la subcategoría.
  * @returns Objeto con mensaje de éxito y la subcategoría creada.
  * @throws Error si falla la creación.
- */
+ * /
 export const createSubCategory = async (
     data: CreateSubCategoryInput,
 ): Promise<{ message: string; subCategory: SubCategoryModel }> => {
@@ -53,7 +57,7 @@ export const createSubCategory = async (
  * @param data - Datos a actualizar.
  * @returns Objeto con mensaje de éxito y la subcategoría actualizada.
  * @throws Error si no se encuentra la subcategoría.
- */
+ * /
 export const updateSubCategory = async (
     id: number,
     data: UpdateSubCategoryInput,
@@ -73,7 +77,7 @@ export const updateSubCategory = async (
  * @param id - ID de la subcategoría a deshabilitar.
  * @returns Objeto con mensaje de éxito y la subcategoría deshabilitada.
  * @throws Error si no se encuentra la subcategoría.
- */
+ * /
 export const disableSubCategory = async (
     id: number,
 ): Promise<{ message: string; subCategory: SubCategoryModel }> => {
@@ -86,3 +90,4 @@ export const disableSubCategory = async (
         subCategory,
     };
 };
+*/

@@ -1,10 +1,14 @@
+/*
+ * TEMPORARILY DISABLED: products now belong directly to categories.
+ * Kept as commented reference; do not mount until subcategories are restored.
+ *
 // src/controllers/subcategory.controller.ts
 import { Request, Response } from "express";
 import * as subCategoryService from "../services/subcategory.service";
 
 /**
  * Obtener todas las subcategorías activas.
- */
+ * /
 export const getSubCategories = async (_req: Request, res: Response) => {
     try {
         const subCategories = await subCategoryService.getAllSubCategories();
@@ -16,7 +20,7 @@ export const getSubCategories = async (_req: Request, res: Response) => {
 
 /**
  * Obtener subcategoría por ID.
- */
+ * /
 export const getSubCategory = async (req: Request, res: Response) => {
     try {
         const subCategory = await subCategoryService.getSubCategoryById(
@@ -33,7 +37,7 @@ export const getSubCategory = async (req: Request, res: Response) => {
 
 /**
  * Crear nueva subcategoría.
- */
+ * /
 export const createSubCategory = async (req: Request, res: Response) => {
     try {
         const result = await subCategoryService.createSubCategory(req.body);
@@ -45,7 +49,7 @@ export const createSubCategory = async (req: Request, res: Response) => {
 
 /**
  * Actualizar subcategoría existente.
- */
+ * /
 export const updateSubCategory = async (req: Request, res: Response) => {
     try {
         const result = await subCategoryService.updateSubCategory(
@@ -65,7 +69,7 @@ export const updateSubCategory = async (req: Request, res: Response) => {
 
 /**
  * Deshabilitar (soft delete) subcategoría.
- */
+ * /
 export const disableSubCategory = async (req: Request, res: Response) => {
     try {
         const result = await subCategoryService.disableSubCategory(
@@ -81,3 +85,4 @@ export const disableSubCategory = async (req: Request, res: Response) => {
         });
     }
 };
+*/

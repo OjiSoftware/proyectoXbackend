@@ -1,3 +1,7 @@
+/*
+ * TEMPORARILY DISABLED: products now use categories directly.
+ * Kept as commented reference until subcategories are restored.
+ *
 // src/routes/subcategory.routes.ts
 import { Router } from "express";
 import * as subCategoryController from "../controllers/subcategory.controller";
@@ -11,3 +15,4 @@ router.put("/:id", subCategoryController.updateSubCategory);
 router.delete("/:id", subCategoryController.disableSubCategory);
 
 export default router;
+*/

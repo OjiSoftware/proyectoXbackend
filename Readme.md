@@ -52,6 +52,10 @@ npx prisma db push
 
 El cliente generado esta ignorado por Git. Por eso `npm run build` lo genera antes de compilar TypeScript.
 
+Los productos se relacionan directamente con una categoria mediante `Product.categoryId`. El modelo y los endpoints de subcategorias estan temporalmente comentados; la ruta `/api/categories/catalog`, que devolvia categorias con subcategorias, tambien quedo desactivada. La API normal `/api/categories` sigue disponible.
+
+Al sincronizar este cambio con `npx prisma db push`, Prisma quitara la tabla `subcategories` y la antigua relacion de productos. Verificar previamente que no haya datos que conservar y que `DATABASE_URL` apunte al entorno correcto.
+
 ## Desarrollo local
 
 1. Instalar dependencias:

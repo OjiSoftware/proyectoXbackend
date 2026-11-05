@@ -8,7 +8,7 @@ export type CreateProductInput = {
     imageUrl: string;
     stock: number;
     brandId?: number | null;
-    subCategoryId: number;
+    categoryId: number;
     status?: boolean;
     isOffer?: boolean
     showingInCatalog?: boolean;
@@ -24,7 +24,7 @@ export type UpdateProductInput = {
     imageUrl?: string;
     stock?: number;
     brandId?: number | null;
-    subCategoryId?: number;
+    categoryId?: number;
     status?: boolean;
     isOffer?: boolean
     showingInCatalog?: boolean;

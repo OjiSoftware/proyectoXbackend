@@ -15,11 +15,7 @@ export const findAllProducts = async (): Promise<ProductModel[]> => {
             orderBy: { id: "asc" },
             include: {
                 brand: true,
-                subCategory: {
-                    include: {
-                        category: true
-                    }
-                }
+                category: true,
             },
         });
     } catch (error) {
@@ -42,11 +38,7 @@ export const findProductById = async (
             where: { id },
             include: {
                 brand: true,
-                subCategory: {
-                    include: {
-                        category: true,
-                    }
-                }
+                category: true,
             },
         });
     } catch (error) {
@@ -130,11 +122,7 @@ export const findCatalogProducts = async (): Promise<ProductModel[]> => {
             where: { status: true, showingInCatalog: true },
             include: {
                 brand: true,
-                subCategory: {
-                    include: {
-                        category: true,
-                    }
-                }
+                category: true,
             },
         })
 
@@ -143,5 +131,4 @@ export const findCatalogProducts = async (): Promise<ProductModel[]> => {
         throw new Error("No se pudieron traer los datos de findCatalogProducts")
     }
 };
-
 

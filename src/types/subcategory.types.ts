@@ -1,3 +1,6 @@
+/*
+ * TEMPORARILY DISABLED: retained as reference while the subcategory feature is unused.
+ *
 export type CreateSubCategoryInput = {
     name: string;
     categoryId: number;
@@ -9,3 +12,4 @@ export type UpdateSubCategoryInput = {
     categoryId?: number;
     status?: boolean;
 };
+*/
