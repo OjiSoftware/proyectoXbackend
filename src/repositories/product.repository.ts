@@ -16,6 +16,7 @@ export const findAllProducts = async (): Promise<ProductModel[]> => {
             include: {
                 brand: true,
                 category: true,
+                provider: true,
             },
         });
     } catch (error) {
@@ -39,6 +40,7 @@ export const findProductById = async (
             include: {
                 brand: true,
                 category: true,
+                provider: true,
             },
         });
     } catch (error) {
@@ -59,6 +61,7 @@ export const insertProduct = async (
     try {
         return await prisma.product.create({
             data,
+            include: { provider: true },
         });
     } catch (error) {
         console.error("Error al crear producto:", error);
@@ -83,6 +86,7 @@ export const updateProduct = async (
         return await prisma.product.update({
             where: { id },
             data: validData,
+            include: { provider: true },
         });
     } catch (error) {
         console.warn(
@@ -123,6 +127,7 @@ export const findCatalogProducts = async (): Promise<ProductModel[]> => {
             include: {
                 brand: true,
                 category: true,
+                provider: true,
             },
         })
 
@@ -131,4 +136,3 @@ export const findCatalogProducts = async (): Promise<ProductModel[]> => {
         throw new Error("No se pudieron traer los datos de findCatalogProducts")
     }
 };
-

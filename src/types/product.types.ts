@@ -8,6 +8,7 @@ export type CreateProductInput = {
     imageUrl: string;
     stock: number;
     brandId?: number | null;
+    providerId?: number | null;
     categoryId: number;
     status?: boolean;
     isOffer?: boolean
@@ -24,6 +25,7 @@ export type UpdateProductInput = {
     imageUrl?: string;
     stock?: number;
     brandId?: number | null;
+    providerId?: number | null;
     categoryId?: number;
     status?: boolean;
     isOffer?: boolean

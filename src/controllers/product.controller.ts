@@ -36,16 +36,13 @@ export const getProduct = async (req: Request, res: Response) => {
  */
 export const createProduct = async (req: Request, res: Response) => {
     try {
-        /* control barcode */
-
+        /*
         const barcodeError = validateBarcode(req.body?.barcode);
 
         if (barcodeError) {
             return res.status(400).json({ message: barcodeError });
         }
-        
-
-        /* fin control barcode */
+        */
 
         const result = await productService.createProduct(req.body);
         res.status(201).json(result);
@@ -60,11 +57,13 @@ export const createProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
     try {
 
+        /*
         const barcodeError = validateBarcode(req.body?.barcode);
 
         if (barcodeError) {
             return res.status(400).json({ message: barcodeError });
         }
+        */
 
         const result = await productService.updateProduct(
             Number(req.params.id),
@@ -110,8 +109,8 @@ export const getCatalog = async (_req: Request, res: Response) => {
 }
 
 
-/* Verifica BarCode */
-
+/*
+La validación anterior solo aceptaba formatos estándar EAN/UPC.
 const validateBarcode =  (value: unknown): string | null => {
     
     if (value === undefined || value === null) return null;
@@ -143,3 +142,4 @@ const validateBarcode =  (value: unknown): string | null => {
 
     return null;
 }
+*/

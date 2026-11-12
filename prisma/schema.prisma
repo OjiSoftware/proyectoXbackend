@@ -102,6 +102,17 @@ model Brand {
   @@map("brands")
 }
 
+model Provider {
+  id            Int       @id @default(autoincrement())
+  name          String?
+  businessName  String?   @map("business_name")
+  phoneNumber   String?   @map("phone_number")
+  email         String?
+  products      Product[]
+
+  @@map("providers")
+}
+
 model Sale {
   id                Int           @id @default(autoincrement())
   createdAt         DateTime      @default(now()) @map("created_at")
@@ -160,7 +171,7 @@ model Product {
   costPrice         Decimal?      @map("cost_price") @db.Decimal(12, 2)
   status            Boolean       @default(true)
   isOffer           Boolean       @default(false)
-  barcode           String?       @unique @db.VarChar(14)
+  barcode           String?       @unique
   createdAt         DateTime      @default(now()) @map("created_at")
   imageUrl          String        @map("img") @db.Text
   stock             Int
@@ -169,6 +180,8 @@ model Product {
   category          Category      @relation(fields: [categoryId], references: [id])
   brandId           Int?           @map("brand_id")
   brand             Brand?         @relation(fields: [brandId], references: [id])
+  providerId        Int?           @map("provider_id")
+  provider          Provider?      @relation(fields: [providerId], references: [id], onDelete: Restrict)
   saleDetails       SaleDetails[]
 
   @@map("products")

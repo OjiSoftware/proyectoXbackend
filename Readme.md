@@ -56,6 +56,8 @@ Los productos se relacionan directamente con una categoria mediante `Product.cat
 
 Al sincronizar este cambio con `npx prisma db push`, Prisma quitara la tabla `subcategories` y la antigua relacion de productos. Verificar previamente que no haya datos que conservar y que `DATABASE_URL` apunte al entorno correcto.
 
+Los proveedores se administran mediante `/api/providers` (GET, GET por ID, POST, PUT y DELETE). Sus campos `name`, `businessName`, `phoneNumber` y `email` son opcionales. `Product.providerId` tambien es opcional para permitir asignar proveedor a productos existentes; un proveedor asociado no se puede eliminar hasta desvincular o reasignar sus productos.
+
 ## Desarrollo local
 
 1. Instalar dependencias:
