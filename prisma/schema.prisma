@@ -121,8 +121,8 @@ model Sale {
   isStockDeducted   Boolean       @default(false) @map("is_stock_deducted")
   expiresAt         DateTime?     @map("expires_at")
   notes             String?       @db.Text
-  clientId          Int           @map("client_id")
-  client            Client        @relation(fields: [clientId], references: [id])
+  clientId          Int?          @map("client_id")
+  client            Client?       @relation(fields: [clientId], references: [id])
   addressId         Int?          @map("address_id")
   address           BillAddress?  @relation(fields: [addressId], references: [id])
   details           SaleDetails[]

@@ -147,7 +147,8 @@ export const disableSale = async (
   if (!result) throw new Error('Venta no encontrada');
   const saleData = result as SaleWithAll;
 
-  if (saleData?.client?.email) {
+  const clientEmail = saleData?.client?.email;
+  if (clientEmail) {
     if (!wasPending) {
       const paymentInfo = saleData.transaction
         ? {
@@ -160,11 +161,11 @@ export const disableSale = async (
 
       emailService
         .sendOrderCancellationEmail(
-          saleData.client.email,
+          clientEmail,
           saleData,
           paymentInfo,
         )
-        .then(() => console.log(`📧 Mail enviado a: ${saleData.client.email}`))
+        .then(() => console.log(`📧 Mail enviado a: ${clientEmail}`))
         .catch((err) => console.error('❌ Error mail:', err));
     } else {
       console.log(`🚫 Cancelación silenciosa (Trash): La venta era PENDING.`);

@@ -14,6 +14,7 @@ import categoryRoutes from "./routes/category.routes";
 import saleRoutes from "./routes/sale.routes";
 import saleDetailRoutes from "./routes/saleDetail.routes";
 import billAddressRoutes from "./routes/billAddress.routes";
+import reportRoutes from "./routes/report.routes";
 //import paymentRoutes from "./routes/payment.routes";
 
 const app = express();
@@ -49,6 +50,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/sales", saleRoutes);
 app.use("/api/salesDetails", saleDetailRoutes);
 app.use("/api/billAddresses", billAddressRoutes);
+app.use("/api/reports", reportRoutes);
 //app.use("/api/payments", paymentRoutes);
 
 

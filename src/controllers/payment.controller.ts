@@ -31,6 +31,12 @@ export const createPreference = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Venta no encontrada' });
     }
 
+    if (sale.clientId === null) {
+      return res.status(400).json({
+        error: 'No se puede iniciar el pago de una venta sin cliente',
+      });
+    }
+
     // Si es una venta vieja (CANCELLED), no dejamos que vuelva a pagar
     if (sale.status === 'CANCELLED') {
       return res.status(400).json({
@@ -55,6 +61,12 @@ export const createPreference = async (req: Request, res: Response) => {
           details: stockError.message,
         });
       }
+    }
+
+    if (sale.clientId === null) {
+      return res.status(400).json({
+        error: 'No se puede iniciar el pago de una venta sin cliente',
+      });
     }
 
     await prisma.transaction.upsert({
@@ -285,7 +297,8 @@ export const handleWebhook = async (req: Request, res: Response) => {
             },
           });
 
-          if (fullSaleInfo && fullSaleInfo.client.email) {
+          const clientEmail = fullSaleInfo?.client?.email;
+          if (fullSaleInfo && clientEmail) {
             const paymentInfo = {
               id: paymentData.id || 'N/A',
               method: paymentData.payment_method_id || 'Desconocido',
@@ -294,13 +307,13 @@ export const handleWebhook = async (req: Request, res: Response) => {
             };
 
             sendOrderConfirmationEmail(
-              fullSaleInfo.client.email,
+              clientEmail,
               fullSaleInfo,
               paymentInfo,
             )
               .then(() =>
                 console.log(
-                  `📧 Notificacion enviada a: ${fullSaleInfo.client.email}`,
+                  `📧 Notificacion enviada a: ${clientEmail}`,
                 ),
               )
               .catch((err) =>
