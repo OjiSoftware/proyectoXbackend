@@ -11,14 +11,14 @@ type SaleDetailWithProduct = SaleDetails & {
 };
 
 export type SaleWithAll = Sale & {
-    client: Client;
+    client: Client | null;
     address: BillAddress | null;
     details: SaleDetailWithProduct[];
     transaction?: any;
 };
 
 export type CreateSaleInput = {
-  clientId: number;
+  clientId?: number | null;
   addressId?: number;
   status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
   sendEmail?: boolean;

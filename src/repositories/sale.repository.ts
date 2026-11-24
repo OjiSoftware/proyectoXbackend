@@ -70,10 +70,12 @@ export const insertSale = async (data: CreateSaleInput): Promise<SaleModel> => {
       const detailsWithPrices = [];
       let totalInCents = 0;
 
-      const lastAddress = await tx.billAddress.findFirst({
-        where: { clientId: data.clientId },
-        orderBy: { id: 'desc' },
-      });
+      const lastAddress = data.clientId != null
+        ? await tx.billAddress.findFirst({
+            where: { clientId: data.clientId },
+            orderBy: { id: 'desc' },
+          })
+        : null;
 
       for (const item of data.details) {
         const product = await tx.product.findUnique({
@@ -107,7 +109,7 @@ export const insertSale = async (data: CreateSaleInput): Promise<SaleModel> => {
 
       return await tx.sale.create({
         data: {
-          clientId: cleanData.clientId,
+          clientId: cleanData.clientId ?? null,
           addressId: lastAddress?.id || null,
           status: cleanData.status ?? 'PENDING',
           total: finalTotal,
