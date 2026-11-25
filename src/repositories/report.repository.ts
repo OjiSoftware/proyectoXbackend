@@ -25,23 +25,23 @@ export const findCompletedSaleItems = async (filters: SalesReportFilters) => {
         product: {
           ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
           ...(filters.providerId ? { providerId: filters.providerId } : {}),
-          ...(filters.brandId ? { brandId: filters.brandId } : {}),
+          // ...(filters.brandId ? { brandId: filters.brandId } : {}),
         },
         ...(search
           ? {
               OR: [
                 { product: { name: { contains: search, mode: 'insensitive' } } },
                 { product: { barcode: { contains: search, mode: 'insensitive' } } },
-                { sale: { client: { name: { contains: search, mode: 'insensitive' } } } },
-                { sale: { client: { surname: { contains: search, mode: 'insensitive' } } } },
-                { sale: { client: { dni: { contains: search } } } },
+                // { sale: { client: { name: { contains: search, mode: 'insensitive' } } } },
+                // { sale: { client: { surname: { contains: search, mode: 'insensitive' } } } },
+                // { sale: { client: { dni: { contains: search } } } },
               ],
             }
           : {}),
       },
       include: {
-        sale: { include: { client: true, transaction: true } },
-        product: { include: { category: true, provider: true, brand: true } },
+        sale: { include: { /* client: true, */ transaction: true } },
+        product: { include: { category: true, provider: true /* , brand: true */ } },
       },
       orderBy: [{ sale: { createdAt: 'desc' } }, { id: 'desc' }],
     });

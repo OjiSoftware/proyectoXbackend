@@ -25,7 +25,7 @@ export const getSalesReport = async (req: Request, res: Response) => {
       to: toDate(q.to, true),
       categoryId: toInt(q.categoryId),
       providerId: toInt(q.providerId),
-      brandId: toInt(q.brandId),
+      // brandId: toInt(q.brandId),
       paymentMethod: typeof q.paymentMethod === 'string' ? q.paymentMethod : undefined,
       search: typeof q.search === 'string' ? q.search : undefined,
       page: toInt(q.page),

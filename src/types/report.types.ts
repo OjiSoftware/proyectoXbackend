@@ -3,7 +3,7 @@ export interface SalesReportFilters {
   to?: Date;
   categoryId?: number;
   providerId?: number;
-  brandId?: number;
+  // brandId?: number;
   paymentMethod?: string;
   search?: string;
   page?: number;
@@ -14,12 +14,12 @@ export interface SalesReportItem {
   id: number;
   saleId: number;
   date: Date;
-  clientName: string;
-  clientDni: string | null;
+  // clientName: string;
+  // clientDni: string | null;
   productName: string;
   categoryName: string;
   providerName: string;
-  brandName: string;
+  // brandName: string;
   paymentMethod: string;
   quantity: number;
   unitaryPrice: number;

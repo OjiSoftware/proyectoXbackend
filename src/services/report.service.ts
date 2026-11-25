@@ -20,7 +20,7 @@ const isPosGenericClient = (client?: ClientLike) => {
 /** Misma lógica que getSalePaymentLabel del frontend (helpers/saleExport.ts). */
 const getPaymentLabel = (sale: {
   notes: string | null;
-  client: ClientLike;
+  client?: ClientLike;
   transaction: { paymentMethod: string | null } | null;
 }): string => {
   if (sale.transaction?.paymentMethod) return sale.transaction.paymentMethod;
@@ -41,22 +41,22 @@ const mapRowToReportItem = (row: ReportRow, paymentMethod: string): SalesReportI
   const costPrice = Number(row.product.costPrice ?? 0);
   const subtotal = unitaryPrice * row.quantity;
   const margin = (unitaryPrice - costPrice) * row.quantity;
-  const generic = isPosGenericClient(row.sale.client);
+  // const generic = isPosGenericClient(row.sale.client);
 
   return {
     id: row.id,
     saleId: row.saleId,
     date: row.sale.createdAt,
-    clientName:
-      generic || !row.sale.client
-        ? 'Consumidor Final'
-        : `${row.sale.client.surname}, ${row.sale.client.name}`,
-    clientDni: generic ? null : row.sale.client?.dni ?? null,
+    // clientName:
+    //   generic || !row.sale.client
+    //     ? 'Consumidor Final'
+    //     : `${row.sale.client.surname}, ${row.sale.client.name}`,
+    // clientDni: generic ? null : row.sale.client?.dni ?? null,
     productName: row.product.name,
     categoryName: row.product.category?.name ?? '-',
     providerName:
       row.product.provider?.name || row.product.provider?.businessName || '-',
-    brandName: row.product.brand?.name ?? '-',
+    // brandName: row.product.brand?.name ?? '-',
     paymentMethod,
     quantity: row.quantity,
     unitaryPrice,
