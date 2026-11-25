@@ -2,6 +2,7 @@ import * as reportRepo from '../repositories/report.repository';
 import {
   SalesReportFilters,
   SalesReportItem,
+  SalesReportKpis,
   SalesReportResult,
 } from '../types/report.types';
 
@@ -33,6 +34,73 @@ const getPaymentLabel = (sale: {
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
+type ReportRow = Awaited<ReturnType<typeof reportRepo.findCompletedSaleItems>>[number];
+
+const mapRowToReportItem = (row: ReportRow, paymentMethod: string): SalesReportItem => {
+  const unitaryPrice = Number(row.unitaryPrice);
+  const costPrice = Number(row.product.costPrice ?? 0);
+  const subtotal = unitaryPrice * row.quantity;
+  const margin = (unitaryPrice - costPrice) * row.quantity;
+  const generic = isPosGenericClient(row.sale.client);
+
+  return {
+    id: row.id,
+    saleId: row.saleId,
+    date: row.sale.createdAt,
+    clientName:
+      generic || !row.sale.client
+        ? 'Consumidor Final'
+        : `${row.sale.client.surname}, ${row.sale.client.name}`,
+    clientDni: generic ? null : row.sale.client?.dni ?? null,
+    productName: row.product.name,
+    categoryName: row.product.category?.name ?? '-',
+    providerName:
+      row.product.provider?.name || row.product.provider?.businessName || '-',
+    brandName: row.product.brand?.name ?? '-',
+    paymentMethod,
+    quantity: row.quantity,
+    unitaryPrice,
+    costPrice,
+    subtotal,
+    margin,
+  };
+};
+
+const calculateKpis = (items: SalesReportItem[]): SalesReportKpis => {
+  const saleIds = new Set<number>();
+  let totalSold = 0;
+  let unitsSold = 0;
+  let totalMargin = 0;
+
+  for (const item of items) {
+    saleIds.add(item.saleId);
+    totalSold += item.subtotal;
+    unitsSold += item.quantity;
+    totalMargin += item.margin;
+  }
+
+  const salesCount = saleIds.size;
+
+  return {
+    totalSold: round(totalSold),
+    salesCount,
+    averageTicket: salesCount > 0 ? round(totalSold / salesCount) : 0,
+    unitsSold,
+    totalMargin: round(totalMargin),
+  };
+};
+
+const paginateItems = <T>(items: T[], rawPage?: number, rawPageSize?: number) => {
+  const totalItems = items.length;
+  const page = rawPage && rawPage > 0 ? rawPage : 1;
+  const pageSize = rawPageSize && rawPageSize > 0 ? rawPageSize : totalItems || 1;
+  const paged = rawPageSize
+    ? items.slice((page - 1) * pageSize, page * pageSize)
+    : items;
+
+  return { items: paged, totalItems, page, pageSize };
+};
+
 export const getSalesReport = async (
   filters: SalesReportFilters,
 ): Promise<SalesReportResult> => {
@@ -44,69 +112,18 @@ export const getSalesReport = async (
   const wantedPayment = filters.paymentMethod?.trim().toLowerCase();
 
   const items: SalesReportItem[] = [];
-  const saleIds = new Set<number>();
-  let totalSold = 0;
-  let unitsSold = 0;
-  let totalMargin = 0;
-
   for (const row of rows) {
     const payment = getPaymentLabel(row.sale);
     if (wantedPayment && payment.toLowerCase() !== wantedPayment) continue;
-
-    const unitaryPrice = Number(row.unitaryPrice);
-    const subtotal = unitaryPrice * row.quantity;
-    const cost = Number(row.product.costPrice ?? 0);
-    const margin = (unitaryPrice - cost) * row.quantity;
-    const generic = isPosGenericClient(row.sale.client);
-
-    saleIds.add(row.saleId);
-    totalSold += subtotal;
-    unitsSold += row.quantity;
-    totalMargin += margin;
-
-    items.push({
-      id: row.id,
-      saleId: row.saleId,
-      date: row.sale.createdAt,
-      clientName:
-        generic || !row.sale.client
-          ? 'Consumidor Final'
-          : `${row.sale.client.surname}, ${row.sale.client.name}`,
-      clientDni: generic ? null : row.sale.client?.dni ?? null,
-      productName: row.product.name,
-      categoryName: row.product.category?.name ?? '-',
-      providerName:
-        row.product.provider?.name || row.product.provider?.businessName || '-',
-      brandName: row.product.brand?.name ?? '-',
-      paymentMethod: payment,
-      quantity: row.quantity,
-      unitaryPrice,
-      costPrice: cost,
-      subtotal,
-      margin,
-    });
+    items.push(mapRowToReportItem(row, payment));
   }
 
-  const salesCount = saleIds.size;
-  const totalItems = items.length;
-  const page = filters.page && filters.page > 0 ? filters.page : 1;
-  const pageSize = filters.pageSize && filters.pageSize > 0 ? filters.pageSize : totalItems || 1;
-  const paged = filters.pageSize
-    ? items.slice((page - 1) * pageSize, page * pageSize)
-    : items;
+  const kpis = calculateKpis(items);
+  const pagination = paginateItems(items, filters.page, filters.pageSize);
 
   return {
-    kpis: {
-      totalSold: round(totalSold),
-      salesCount,
-      averageTicket: salesCount > 0 ? round(totalSold / salesCount) : 0,
-      unitsSold,
-      totalMargin: round(totalMargin),
-    },
-    items: paged,
-    totalItems,
-    page,
-    pageSize,
+    kpis,
+    ...pagination,
     paymentMethods: Array.from(new Set([...DEFAULT_PAYMENT_METHODS, ...dbPaymentMethods])),
   };
 };
