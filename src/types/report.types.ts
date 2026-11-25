@@ -23,8 +23,9 @@ export interface SalesReportItem {
   paymentMethod: string;
   quantity: number;
   unitaryPrice: number;
+  costPrice: number;
   subtotal: number;
-  margin: number | null;
+  margin: number;
 }
 
 export interface SalesReportKpis {

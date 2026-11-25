@@ -55,14 +55,14 @@ export const getSalesReport = async (
 
     const unitaryPrice = Number(row.unitaryPrice);
     const subtotal = unitaryPrice * row.quantity;
-    const cost = row.product.costPrice != null ? Number(row.product.costPrice) : null;
-    const margin = cost != null ? (unitaryPrice - cost) * row.quantity : null;
+    const cost = Number(row.product.costPrice ?? 0);
+    const margin = (unitaryPrice - cost) * row.quantity;
     const generic = isPosGenericClient(row.sale.client);
 
     saleIds.add(row.saleId);
     totalSold += subtotal;
     unitsSold += row.quantity;
-    if (margin != null) totalMargin += margin;
+    totalMargin += margin;
 
     items.push({
       id: row.id,
@@ -81,6 +81,7 @@ export const getSalesReport = async (
       paymentMethod: payment,
       quantity: row.quantity,
       unitaryPrice,
+      costPrice: cost,
       subtotal,
       margin,
     });
