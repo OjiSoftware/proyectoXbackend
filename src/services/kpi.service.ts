@@ -26,10 +26,14 @@ const resolveDateRange = (from?: Date, to?: Date) => {
   return { from: start, to: end, previousFrom, previousTo };
 };
 
+const ARG_OFFSET_MS = -3 * 60 * 60 * 1000;
+
 const formatPeriodKey = (date: Date, groupBy: KpiGroupBy): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  // Desplazamos a UTC-3 (Argentina) y leemos en UTC para no depender de la TZ del servidor
+  const local = new Date(date.getTime() + ARG_OFFSET_MS);
+  const year = local.getUTCFullYear();
+  const month = String(local.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(local.getUTCDate()).padStart(2, '0');
 
   if (groupBy === 'month') {
     return `${year}-${month}`;
@@ -37,13 +41,12 @@ const formatPeriodKey = (date: Date, groupBy: KpiGroupBy): string => {
 
   if (groupBy === 'week') {
     // Inicio de semana (lunes) en formato YYYY-MM-DD
-    const d = new Date(date);
-    const dayOfWeek = d.getDay();
+    const dayOfWeek = local.getUTCDay();
     const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    d.setDate(d.getDate() + diffToMonday);
-    const wYear = d.getFullYear();
-    const wMonth = String(d.getMonth() + 1).padStart(2, '0');
-    const wDay = String(d.getDate()).padStart(2, '0');
+    local.setUTCDate(local.getUTCDate() + diffToMonday);
+    const wYear = local.getUTCFullYear();
+    const wMonth = String(local.getUTCMonth() + 1).padStart(2, '0');
+    const wDay = String(local.getUTCDate()).padStart(2, '0');
     return `${wYear}-${wMonth}-${wDay}`;
   }
 
