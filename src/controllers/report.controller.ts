@@ -9,7 +9,7 @@ const toInt = (v: unknown): number | undefined => {
 
 const toDate = (v: unknown, endOfDay: boolean): Date | undefined => {
   if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return undefined;
-  const d = new Date(`${v}T${endOfDay ? '23:59:59.999' : '00:00:00.000'}`);
+  const d = new Date(`${v}T${endOfDay ? '23:59:59.999' : '00:00:00.000'}-03:00`);
   return isNaN(d.getTime()) ? undefined : d;
 };
 
