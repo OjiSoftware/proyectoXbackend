@@ -13,7 +13,24 @@ const resolveDateRange = (from?: Date, to?: Date) => {
   const end = to ?? new Date();
   const start =
     from ?? new Date(end.getTime() - DEFAULT_RANGE_DAYS * 24 * 60 * 60 * 1000);
-  return { from: start, to: end };
+
+  // Período anterior: misma duración, pegado justo antes (igual que en kpi.service)
+  const durationMs = Math.max(end.getTime() - start.getTime(), 1);
+  const previousTo = new Date(start.getTime() - 1);
+  const previousFrom = new Date(previousTo.getTime() - durationMs);
+
+  return { from: start, to: end, previousFrom, previousTo };
+};
+
+/** Suma de ventas y costos de un conjunto de ítems vendidos. */
+const sumSalesAndCost = (items: profitabilityRepo.SoldItemForProfitability[]) => {
+  let sales = 0;
+  let cost = 0;
+  for (const item of items) {
+    sales += Number(item.unitaryPrice) * item.quantity;
+    cost += Number(item.product.costPrice ?? 0) * item.quantity;
+  }
+  return { sales, cost };
 };
 
 /**
@@ -22,8 +39,14 @@ const resolveDateRange = (from?: Date, to?: Date) => {
 export const getProfitabilityReport = async (
   filters: ProfitabilityFilters,
 ): Promise<ProfitabilityResult> => {
-  const { from, to } = resolveDateRange(filters.from, filters.to);
-  const items = await profitabilityRepo.findCompletedSoldItemsInRange(from, to);
+  const { from, to, previousFrom, previousTo } = resolveDateRange(
+    filters.from,
+    filters.to,
+  );
+  const [items, previousItems] = await Promise.all([
+    profitabilityRepo.findCompletedSoldItemsInRange(from, to),
+    profitabilityRepo.findCompletedSoldItemsInRange(previousFrom, previousTo),
+  ]);
 
   const byProduct = new Map<number, ProductMarginItem>();
   let totalSales = 0;
@@ -74,14 +97,29 @@ export const getProfitabilityReport = async (
   // Los gastos todavía no existen en el sistema: se suman acá cuando se definan.
   const expenses = 0;
 
+  const grossMarginPercentage =
+    totalSales > 0 ? round((grossProfit / totalSales) * 100) : 0;
+
+  const previous = sumSalesAndCost(previousItems);
+  const previousGrossMarginPercentage =
+    previous.sales > 0
+      ? round(((previous.sales - previous.cost) / previous.sales) * 100)
+      : null;
+  // Diferencia en puntos porcentuales; sin comparación si algún período no tuvo ventas
+  const grossMarginChange =
+    previousGrossMarginPercentage !== null && totalSales > 0
+      ? round(grossMarginPercentage - previousGrossMarginPercentage)
+      : null;
+
   return {
-    period: { from, to },
+    period: { from, to, previousFrom, previousTo },
     kpis: {
       totalSales: round(totalSales),
       totalCost: round(totalCost),
       grossProfit: round(grossProfit),
-      grossMarginPercentage:
-        totalSales > 0 ? round((grossProfit / totalSales) * 100) : 0,
+      grossMarginPercentage,
+      previousPeriodGrossMarginPercentage: previousGrossMarginPercentage,
+      grossMarginChange,
       expenses,
       expensesLoaded: false,
       netProfit: round(totalSales - totalCost - expenses),

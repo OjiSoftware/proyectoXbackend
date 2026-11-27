@@ -23,6 +23,13 @@ export interface ProfitabilityKpis {
   grossProfit: number;
   /** (ventas − costo) ÷ ventas × 100 */
   grossMarginPercentage: number;
+  /** Margen bruto del período anterior. null si no hubo ventas en ese período. */
+  previousPeriodGrossMarginPercentage: number | null;
+  /**
+   * Diferencia en puntos porcentuales contra el período anterior
+   * (margen actual − margen anterior). null si alguno de los dos períodos no tuvo ventas.
+   */
+  grossMarginChange: number | null;
   /** Gastos del período. Todavía no existen en el sistema: siempre 0. */
   expenses: number;
   expensesLoaded: boolean;
@@ -35,6 +42,8 @@ export interface ProfitabilityResult {
   period: {
     from: Date;
     to: Date;
+    previousFrom: Date;
+    previousTo: Date;
   };
   kpis: ProfitabilityKpis;
   products: ProductMarginItem[];
