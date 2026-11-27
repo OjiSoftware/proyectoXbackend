@@ -11,6 +11,13 @@ const DEFAULT_RANGE_DAYS = 30;
 
 const round = (n: number): number => Math.round(n * 100) / 100;
 
+/**
+ * Variación porcentual contra el período anterior.
+ * null si el período anterior fue 0 (no se puede dividir).
+ */
+const growthPercentage = (current: number, previous: number): number | null =>
+  previous > 0 ? round(((current - previous) / previous) * 100) : null;
+
 const resolveDateRange = (from?: Date, to?: Date) => {
   const end = to ?? new Date();
   const start =
@@ -127,13 +134,32 @@ export const getSalesKpis = async (
       ? round(current.unitsSold / current.transactionsCount)
       : 0;
 
-  const salesGrowthPercentage =
-    previous.totalSales > 0
-      ? round(
-          ((current.totalSales - previous.totalSales) / previous.totalSales) *
-            100,
-        )
-      : null;
+  const previousAverageTicket =
+    previous.transactionsCount > 0
+      ? round(previous.totalSales / previous.transactionsCount)
+      : 0;
+
+  const previousUnitsPerTransaction =
+    previous.transactionsCount > 0
+      ? round(previous.unitsSold / previous.transactionsCount)
+      : 0;
+
+  const salesGrowthPercentage = growthPercentage(
+    current.totalSales,
+    previous.totalSales,
+  );
+  const ticketGrowthPercentage = growthPercentage(
+    averageTicket,
+    previousAverageTicket,
+  );
+  const transactionsGrowthPercentage = growthPercentage(
+    current.transactionsCount,
+    previous.transactionsCount,
+  );
+  const unitsPerTransactionGrowthPercentage = growthPercentage(
+    unitsPerTransaction,
+    previousUnitsPerTransaction,
+  );
 
   return {
     period: {
@@ -150,6 +176,12 @@ export const getSalesKpis = async (
     unitsPerTransaction,
     previousPeriodTotalSales: round(previous.totalSales),
     salesGrowthPercentage,
+    previousPeriodAverageTicket: previousAverageTicket,
+    ticketGrowthPercentage,
+    previousPeriodTransactionsCount: previous.transactionsCount,
+    transactionsGrowthPercentage,
+    previousPeriodUnitsPerTransaction: previousUnitsPerTransaction,
+    unitsPerTransactionGrowthPercentage,
     transactionsByPeriod: groupTransactionsByPeriod(currentSales, groupBy),
   };
 };
